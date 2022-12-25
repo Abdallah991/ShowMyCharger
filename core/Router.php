@@ -41,6 +41,7 @@ class Router
         $method = $this->request->method();
         $callback = $this->routes[$method][$path] ?? false;
 
+
 //        if path don't exist, return 404 error
         if ($callback === false) {
             $this->response->setStatusCode(404);

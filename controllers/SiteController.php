@@ -15,6 +15,8 @@ class SiteController extends Controller
         $params = [
             'name' => 'Mohammed'
         ];
+
+        
 //        render application view
         return self::render('home', $params);
     }

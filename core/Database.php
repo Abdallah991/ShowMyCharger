@@ -21,22 +21,67 @@ class Database
         $this->createMigrationTable();
         $appliedMigrations =$this->getAppliedMigration();
 
+
+
+        $newMigrations = [];
         $files = scandir(Application::$ROOT_DIR."/migrations");
         $toApplyMigrations= array_diff($files, $appliedMigrations);
 
+        $this->log($toApplyMigrations);
+
         foreach ($toApplyMigrations as $migration) {
-            if($migration ==='.' || $migration='..') {
+
+            if($migration ==='.') {
                 continue;
             }
+
+            if($migration ==='..') {
+                continue;
+            }
+
+
+
+
+
+
+            $this->log($migration);
+
+
             require_once Application::$ROOT_DIR.'/migrations/'.$migration;
 
             $className = pathinfo($migration, PATHINFO_FILENAME);
+
+            $this->log($className);
+
+            $instance = new $className();
+
+            $instance->up();
+
+            $newMigrations[] = $migration;
+
+            $this->log($migration);
+
+
+        }
+
+        if(!empty($newMigrations)) {
+            $this->saveMigrations($newMigrations);
+
+        } else {
+            $this->log('All migrations applied');
         }
 
 
 
 
 }
+
+ public function saveMigrations(array $migrations) {
+       $this->log($migrations);
+        $str = implode(",",array_map(fn($m) => "('$m')", $migrations));
+        $statement = $this->pdo->prepare("INSERT INTO migrations (migration) VALUES $str");
+        $statement->execute();
+ }
 
 public function createMigrationTable() {
         $this->pdo->exec("CREATE TABLE IF NOT EXISTS migrations(
@@ -51,6 +96,10 @@ public function getAppliedMigration() {
         $statement->execute();
 
         return $statement->fetchAll(\PDO::FETCH_COLUMN);
+}
+
+public function log($message) {
+        echo '[' .date('y-m-d H:i:s').'] - '  .  $message  .  PHP_EOL;
 }
 
 
