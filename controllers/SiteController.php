@@ -1,7 +1,9 @@
 <?php
 namespace app\controllers;
 use app\controllers\Controller;
+use app\core\Application;
 use app\core\Request;
+use app\core\Response;
 
 class SiteController extends Controller
 {
@@ -11,10 +13,22 @@ class SiteController extends Controller
         return self::render('contact');
     }
 
-    public static function home() {
+    public static function home(Request $request, Response $response) {
         $params = [
-            'name' => 'Mohammed'
+
         ];
+
+        if(!Application::$app->user) {
+             $params = [
+                 'name' => Application::$app->user->firstName
+
+             ];
+        } else {
+            $params = [
+                'name' => 'Guest'
+
+            ];
+        }
 
         
 //        render application view

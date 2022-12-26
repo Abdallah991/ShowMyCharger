@@ -60,7 +60,7 @@ class Router
             $callback[0] = Application::$app->controller;
         }
 //        echo $callback;
-        return call_user_func($callback, $this->request);
+        return call_user_func($callback, $this->request, $this->response);
 
     }
 

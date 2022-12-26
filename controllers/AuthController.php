@@ -2,38 +2,63 @@
 
 namespace app\controllers;
 
+use app\core\Application;
 use app\core\Request;
-use app\models\RegisterModel;
+use app\core\Response;
+use app\models\LoginForm;
+use app\models\User;
 
 class AuthController extends Controller
 {
 
-    public function login() {
-        return self::render('login');
+    public function login(Request $request, Response $response) {
+        $loginForm = new LoginForm();
+        if($request->isPost()) {
+            $loginForm->loadData($request->getBody());
+            if($loginForm->validate() && $loginForm->login()) {
+                $response->redirect('/');
+                return;
+            }
+        }
+
+//        $this->setLayout('auth');
+
+        return self::render('login', [
+        'model' => $loginForm]);
+    }
+
+    public function logout(Request $request, Response $response) {
+        Application::$app->logout();
+        $response->redirect('/');
     }
 
 
     public function register(Request $request) {
-        $this->setLayout('main');
+//        $this->setLayout('main');
 
-        $registerModel = new RegisterModel();
+        $user = new User();
 
-        if($request->isPost()) {
-            $registerModel->loadData($request->getBody());
+        if($request->method() === 'post') {
+            $user->loadData($request->getBody());
 
-            if($registerModel->validate() && $registerModel->register()){
+            if($user->validate() && $user->save()){
 //                $errors['firstName'] = 'This field is required';
+                Application::$app->session->setFlash('success', 'thanks for registering');
+                Application::$app->response->redirect('/');
                 return 'success';
+
             }
-            return self::render('register', [
-                'model'=> $registerModel
+
+
+            return $this->render('register', [
+                'model'=> $user
             ]);
+
         }
 
-
-
-        return self::render('register', [
-            'model'=> $registerModel
+//        $this->setLayout('auth');
+        return $this->render('register', [
+            'model'=> $user
         ]);
     }
 

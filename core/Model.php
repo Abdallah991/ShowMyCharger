@@ -23,7 +23,7 @@ abstract class Model
     }
 
     abstract public function rules():array;
-    public function validate(){
+    public function validate():bool{
 
         foreach ($this->rules() as $attribute=>$rules) {
             $value = $this->{$attribute};
@@ -32,17 +32,40 @@ abstract class Model
                 if(!is_string($ruleName)){
                     $ruleName = $rule[0];
                 }
+
+
                 if($ruleName === self::RULE_REQUIRED && !$value){
-                    $this->addError($attribute, self::RULE_REQUIRED);
+                    $this->addErrorForRule($attribute, self::RULE_REQUIRED, array($rule));
                 }
 
                 if($ruleName === self::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $this->addError($attribute, self::RULE_EMAIL);
+                    $this->addErrorForRule($attribute, self::RULE_EMAIL, array($rule));
 
                 }
 
                 if($ruleName === self::RULE_MATCH && $value !== $this->{$rule['match']}) {
-                    $this->addError($attribute, self::RULE_MATCH);
+                    $rule['match'] = $this->getLabels($rule['match']);
+                    $this->addErrorForRule($attribute, self::RULE_MATCH, array($rule));
+
+                }
+
+                if($ruleName === self::RULE_UNIQUE) {
+                    $className = $rule['class'];
+                    $uniqueAttribute = $rule['attribute'] ?? $attribute;
+                    $tableName = $className::tableName();
+
+                    $statement = Application::$app->db->pdo->prepare("
+                    SELECT * FROM $tableName WHERE $uniqueAttribute= :attr");
+//                    $this->addError($attribute, self::RULE_MATCH);
+                    $statement->bindValue(":attr", $value);
+                    $statement->execute();
+                    $record = $statement->fetchObject();
+
+                    if($record){
+                        $this->addErrorForRule($attribute, self::RULE_UNIQUE, array(['field' => $this->getLabels($attribute)]));
+
+                    }
+
 
                 }
 
@@ -54,16 +77,22 @@ abstract class Model
 
     }
 
-    public function addError($attribute, $rule, $params=[]){
+    private function addErrorForRule($attribute, $rule, $params=[]){
+
 
         $message = $this->errorMessages()[$rule]?? '';
-        foreach ($params as $key=>$value){
-            $message = str_replace("{{$key}}", $value, $message);
+        foreach ($params as $key => $value){
+            $message = str_replace("{{$key}}", "$value", $message);
         }
         $this->errors[$attribute][] = $message;
 }
 
-public function errorMessages() {
+    public function addError($attribute, $message){
+
+        $this->errors[$attribute][] = $message;
+    }
+
+public function errorMessages():array {
 
         return [
             self::RULE_REQUIRED => 'This field is required',
@@ -80,6 +109,14 @@ public function hasError($attribute) {
 
 public function getFirstError($attribute) {
         return $this->errors[$attribute][0] ?? false;
+}
+
+
+
+public function getLabels($attribute) {
+
+        return $this->labels()[$attribute] ?? $attribute;
+
 }
 
 

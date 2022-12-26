@@ -28,21 +28,26 @@ class Field
     public function __toString()
     {
         return  sprintf('
-    <div class="mb-3">
-        <label  class="form-label">%s</label>
-        <input type="%s" name="%s" value="%s" class="form-control%s" >
+    <div class="form-group mb-3">
+        <label>%s</label>
+        <input type="%s" name="%s" value="%s" class="form-control %s ">
         <div class="invalid-feedback">%s</div>
         
-    </div>',$this->attribute,
-            $this->attribute,
+    </div>',$this->model->getLabels($this->attribute),
             $this->type,
+            $this->attribute,
             $this->model->{$this->attribute},
-            $this->model->hasError($this->attribute)? 'is-invalid': '',
-            $this->model->getFirstError($this->attribute));
+            $this->model->hasError($this->attribute) ? 'is-invalid': '',
+            $this->model->getFirstError($this->attribute),
+
+
+
+        );
 
     }
 
-    public function passwordField() {
+    public function passwordField(): Field
+    {
 
         $this->type = self::TYPE_PASSWORD;
         return $this;

@@ -24,12 +24,14 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    <a class="nav-link active" aria-current="page" href="/">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contact Us</a>
+                    <a class="nav-link" href="/borrow">Borrow Charger</a>
                 </li>
             </ul>
+
+
             <ul class="navbar-nav ms-auto ">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/login">Login</a>
@@ -39,10 +41,19 @@
                 </li>
             </ul>
 
+
+
         </div>
     </div>
 </nav>
 <div class="container">
+    <?php if (\app\core\Application::$app->session->getFlash('success')): ?>
+    <div class="alert alert-success">
+        <?php echo  (\app\core\Application::$app->session->getFlash('success'))?>
+    </div>
+    <?php endif;?>
+
+
     {{content}}
 
 </div>

@@ -98,6 +98,10 @@ public function getAppliedMigration() {
         return $statement->fetchAll(\PDO::FETCH_COLUMN);
 }
 
+public function prepare($sql) {
+        $this->pdo->prepare($sql);
+}
+
 public function log($message) {
         echo '[' .date('y-m-d H:i:s').'] - '  .  $message  .  PHP_EOL;
 }
