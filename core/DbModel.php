@@ -22,7 +22,7 @@ abstract class DbModel extends Model
 
      foreach ($attributes as $attribute) {
 
-         $statement->bindValue("$attributes", $this->{$attribute});
+         $statement->bindValue(":$attribute", $this->{$attribute});
      }
 
      $statement->execute();
