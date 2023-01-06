@@ -30,8 +30,8 @@ class User extends UserModel
     public function save():bool {
 
         $this->status = self::STATUS_INACTIVE;
-        $this->firstName ='Abdallah';
-        $this->lastName = 'Alathamneh';
+        $this->firstName ='';
+        $this->lastName = '';
 
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
         return parent::save();
