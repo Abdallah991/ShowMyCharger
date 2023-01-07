@@ -27,3 +27,5 @@ $form = Form::begin('', 'post') ?>
 <button class="btn btn-success">Submit</button>
 <?php Form::end() ?>
 
+<!--if the user had successfully  registered in the system using valid email and password
+and clicked the submit button it will be a success.-->

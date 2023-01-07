@@ -1,5 +1,5 @@
 {
-    "name": "abdallah/show-my-charger",
+    "name": "mohamed/borrow-my-charger",
     "autoload": {
         "psr-4": {
             "app\\": "./"
@@ -7,8 +7,8 @@
     },
     "authors": [
         {
-            "name": "Abdallah Alathamneh",
-            "email": "abdallah@fthm.me"
+            "name": "mohamed ",
+            "email": "mohamed@gmail.com"
         }
     ],
     "require": {

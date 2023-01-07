@@ -70,3 +70,6 @@
 -->
 </body>
 </html>
+
+<!-- in here i have used the navbar code in order for the user to have borrowmycharger profile login and register all visible for the user -->
+<!--i have used the getflash command in order to show success if the user enters successfuly or else false-->

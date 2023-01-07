@@ -14,3 +14,5 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+<!--This form was just created for me testing the data and divided the page into different using div
+also password and inputting the code of submit button-->
